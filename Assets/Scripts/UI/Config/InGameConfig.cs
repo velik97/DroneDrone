@@ -18,17 +18,27 @@ namespace UI.Config
         [SerializeField]
         private GameOverPanelView m_GameOverPanelView;
         [SerializeField]
-        private FinishIndicatorView m_FinishIndicatorView;
-        [SerializeField]
         private BadSignalWarningView m_BadSignalWarningView;
         [SerializeField]
-        private WinMenuView m_WinMenuView; 
+        private WinMenuView m_WinMenuView;
 
         public QuickRestartView QuickRestartView => m_QuickRestartView;
         public PauseMenuView PauseMenuView => m_PauseMenuView;
         public GameOverPanelView GameOverPanelView => m_GameOverPanelView;
-        public FinishIndicatorView FinishIndicatorView => m_FinishIndicatorView;
         public BadSignalWarningView BadSignalWarningView => m_BadSignalWarningView;
         public WinMenuView WinMenuView => m_WinMenuView;
+        
+        private FinishIndicatorView m_FinishIndicatorView;
+        public FinishIndicatorView FinishIndicatorView
+        {
+            get
+            {
+                if (m_FinishIndicatorView == null)
+                {
+                    m_FinishIndicatorView = FindObjectOfType<FinishIndicatorView>();
+                }
+                return m_FinishIndicatorView;
+            }
+        }
     }
 }

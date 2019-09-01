@@ -9,7 +9,7 @@ namespace UI.WinMenu
     public class WinMenuVM : ViewModel, IGameFinishHandler
     {        
         public ReactiveCommand OnGameFinish = new ReactiveCommand();
-        public bool HasNextLevel => LevelScenesList.Instance.HasNextScene();
+        public bool HasNextLevel => SceneNames.Instance.HasNextLevelScene();
         
         public WinMenuVM()
         {

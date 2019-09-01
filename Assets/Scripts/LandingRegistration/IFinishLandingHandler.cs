@@ -1,6 +1,6 @@
 using Util.EventBusSystem;
 
-namespace LevelProgression
+namespace LandingRegistration
 {
     public interface IFinishLandingHandler : IGlobalSubscriber
     {

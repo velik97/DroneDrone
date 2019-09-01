@@ -1,4 +1,5 @@
 using System;
+using LevelsProgressManagement;
 using SceneLoading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,9 +13,10 @@ namespace GameProcessManaging
     public class GameStateManager : BaseDisposable,
         IGlobalInitializableInGame,
         IRestartGameHandler,
-        IGoToNextLevelHandler,
         IGamePauseHandler,
-        IGoToMenuHandler
+        IGoToNextLevelHandler,
+        IGoToMenuHandler,
+        IGameFinishHandler
     {        
         public GameStateManager()
         {
@@ -46,14 +48,21 @@ namespace GameProcessManaging
         public void HandleGoToMenu()
         {
             HandleUnPause();
-            // Todo исправить на норм логику, пока переносит на первый уровень
-            SceneLoader.LoadScene(LevelScenesList.Instance.GetFirstSceneName());
+            SceneLoader.LoadScene(SceneNames.Instance.GetMainMenuSceneName());
         }
         
         public void HandleGoToNextLevel()
         {
             HandleUnPause();
-            SceneLoader.LoadScene(LevelScenesList.Instance.GetNextSceneName());
+            SceneLoader.LoadScene(SceneNames.Instance.GetNextLevelSceneName());
+        }
+
+        public void HandleGameFinish()
+        {
+            if (SceneNames.Instance.GetCurrentSceneIndex() == LevelsProgression.LastAvailableLevel)
+            {
+                LevelsProgression.SetNextLevelAvailable();
+            }
         }
     }
 }

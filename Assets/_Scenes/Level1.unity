@@ -326,18 +326,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 5296659318308269937}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2019164196 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2920733517306040538, guid: 2ac9e2b46ac5f4650ae6da2a74e5a296,
-    type: 3}
-  m_PrefabInstance: {fileID: 2920733517174313214}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a83afbf3e93b477c97eddbcad89d0a17, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2063677088
 GameObject:
   m_ObjectHideFlags: 0
@@ -415,11 +403,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: InGameCanvas
-      objectReference: {fileID: 0}
-    - target: {fileID: 2267900476907527926, guid: 33476048915124203a5854cbaf9b5099,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2267900476907527914, guid: 33476048915124203a5854cbaf9b5099,
         type: 3}
@@ -526,11 +509,6 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2267900476907527915, guid: 33476048915124203a5854cbaf9b5099,
-        type: 3}
-      propertyPath: m_FinishIndicatorView
-      value: 
-      objectReference: {fileID: 2019164196}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 33476048915124203a5854cbaf9b5099, type: 3}
 --- !u!1001 &2336226040265628350

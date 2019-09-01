@@ -22,7 +22,7 @@ namespace UnityEngine.UI
             }
         }
 
-        public LevelScenesList LevelScenesList;
+        public SceneNames m_SceneNames;
         
         public GameOverAndFinishSettings GameOverAndFinishSettings;
         

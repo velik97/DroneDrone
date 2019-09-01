@@ -1,8 +1,7 @@
-using System;
 using UnityEngine;
 using Util.EventBusSystem;
 
-namespace LevelProgression
+namespace LandingRegistration
 {
     [RequireComponent(typeof(Collider2D))]
     public class LandingRegistrar : MonoBehaviour

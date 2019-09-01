@@ -1,12 +1,13 @@
 using GameProcessManaging;
 using UI.MVVM;
 using UniRx;
+using UnityEngine.EventSystems;
 using Util.EventBusSystem;
 
 namespace UI.PauseMenu
 {
     public class PauseMenuVM : ViewModel, IGameOverHandler, IGameFinishHandler
-    {
+    {        
         public PauseMenuVM()
         {
             AddDisposable(EventBus.Subscribe(this));
@@ -29,7 +30,7 @@ namespace UI.PauseMenu
 
         public void GoToMainMenu()
         {
-            
+            EventBus.TriggerEvent<IGoToMenuHandler>(h => h.HandleGoToMenu());
         }
 
         public void HandleGameOver()

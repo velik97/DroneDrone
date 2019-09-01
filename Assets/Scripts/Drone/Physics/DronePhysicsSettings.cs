@@ -13,7 +13,7 @@ namespace Drone.Physics
         [SerializeField]
         private float m_TwoEnginesLinearForce;
         [SerializeField]
-        private float m_AngularForce;
+        private float m_Torque;
 
         [SerializeField]
         private DragType m_DirectionalDragType;
@@ -25,17 +25,25 @@ namespace Drone.Physics
         [SerializeField]
         private float m_AngularDrag;
 
+        [SerializeField]
+        private float m_MaxAngularSpeed;
+        [SerializeField]
+        private AnimationCurve m_TorqueFromAngularSpeedCurve;
+
         public float Mass => m_Mass;
 
         public float OneEngineLinearForce => m_OneEngineLinearForce;
         public float TwoEnginesLinearForce => m_TwoEnginesLinearForce;
-        public float AngularForce => m_AngularForce;
+        public float Torque => m_Torque;
 
         public DragType DirectionalDragType => m_DirectionalDragType;
         public float DirectionalDrag => m_DirectionalDrag;
         
         public DragType AngularDragType => m_AngularDragType;
         public float AngularDrag => m_AngularDrag;
+
+        public float MaxAngularSpeed => m_MaxAngularSpeed;
+        public AnimationCurve TorqueFromAngularSpeedCurve => m_TorqueFromAngularSpeedCurve;
     }
 
     public enum DragType

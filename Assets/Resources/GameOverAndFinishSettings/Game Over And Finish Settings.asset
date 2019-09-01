@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Game Over And Finish Settings
   m_EditorClassIdentifier: 
   m_GameOverCountDown: 3
-  m_GameFinishCountDown: 3
+  m_GameFinishCountDown: 2

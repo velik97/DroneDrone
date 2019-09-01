@@ -19,7 +19,7 @@ namespace Util
         /// <typeparam name="T">type, that <paramref name="asyncTask"/> returns</typeparam>
         public static void CallFuncParallel<T>(Func<T> asyncTask, Action<T> callback = null)
         {
-            CoroutineHandler.StartCoroutineOnHandler(AsyncTaskCoroutine<T>(asyncTask, callback));
+            CoroutineHandler.CoroutineHandler.StartCoroutineOnHandler(AsyncTaskCoroutine<T>(asyncTask, callback));
         }
     
         /// <summary>
@@ -30,7 +30,7 @@ namespace Util
         /// <param name="callback">to be called after <paramref name="asyncTask"/> is complete</param>
         public static void CallFuncParallel(Action asyncTask, Action callback = null)
         {
-            CoroutineHandler.StartCoroutineOnHandler(AsyncTaskCoroutine(asyncTask, callback));
+            CoroutineHandler.CoroutineHandler.StartCoroutineOnHandler(AsyncTaskCoroutine(asyncTask, callback));
         }
 
         private static IEnumerator AsyncTaskCoroutine<T>(Func<T> asyncTask, Action<T> callback = null)

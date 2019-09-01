@@ -51,10 +51,7 @@ namespace UI.PauseMenu
 
         protected override void DestroyViewImplementation()
         {
-            if (gameObject)
-            {
-                gameObject.SetActive(false);
-            }
+            gameObject.SetActive(false);
         }
     }
 }

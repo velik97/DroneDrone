@@ -1,7 +1,5 @@
-using System;
 using Drone.Defects;
 using GameProcessManaging;
-using LevelProgression;
 using UI.MVVM;
 using UniRx;
 using Util.EventBusSystem;
@@ -14,7 +12,6 @@ namespace DefaultNamespace
         public ReactiveCommand OnClose = new ReactiveCommand();
         
         private bool m_EngineIsBroken = false;
-        private bool m_GameFinishedOrOver = false;
 
         public QuickRestartVM()
         {
@@ -28,10 +25,6 @@ namespace DefaultNamespace
 
         public void HandleOneEngineIsBroken()
         {
-            if (m_GameFinishedOrOver)
-            {
-                return;
-            }
             m_EngineIsBroken = true;
             OnOpen.Execute();
         }
@@ -55,8 +48,7 @@ namespace DefaultNamespace
 
         public void HandleCompleteGameFinishCountDown()
         {
-            OnClose.Execute();
-            m_GameFinishedOrOver = true;
+            Dispose();
         }
 
         public void HandleStartGameOverCountDown()
@@ -74,8 +66,7 @@ namespace DefaultNamespace
 
         public void HandleCompleteGameOverCountDown()
         {
-            OnClose.Execute();
-            m_GameFinishedOrOver = true;
+            Dispose();
         }
     }
 }

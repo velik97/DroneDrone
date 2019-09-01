@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Drone.Physics
 {
-    [RequireComponent(typeof(Rigidbody2D))]
+    [RequireComponent(typeof(Rigidbody2D), typeof(DroneControl))]
     public abstract class DronePhysicsBase : MonoBehaviour
     {
         [SerializeField]
@@ -16,8 +16,10 @@ namespace Drone.Physics
         protected bool RightEngineIsOn = false;
         protected bool LeftEngineIsOn = false;
         
-        protected float AngularForce = 0f;
+        protected float Torque = 0f;
         protected float DirectionalForce = 0f;
+
+        protected float AngularVelocity => m_Rigidbody?.angularVelocity ?? 0f;  
 
         private void Awake()
         {
@@ -54,6 +56,9 @@ namespace Drone.Physics
         {
             m_Rigidbody = GetComponent<Rigidbody2D>();
             SetRigidBodyParams();
+
+            DroneControl droneControl = GetComponent<DroneControl>();
+            droneControl.SubscribeOnControl(this);
         }
 
         private void SetRigidBodyParams()
@@ -72,8 +77,8 @@ namespace Drone.Physics
         private void ApplyForces()
         {   
             Vector2 up = transform.up;
-            m_Rigidbody.AddForce(up * DirectionalForce, ForceMode2D.Force);
-            m_Rigidbody.AddTorque(AngularForce, ForceMode2D.Force);
+            m_Rigidbody.AddForce(up * DirectionalForce);
+            m_Rigidbody.AddTorque(Torque);
 
             ApplyDrag();
         }
@@ -88,13 +93,12 @@ namespace Drone.Physics
                 case DragType.DefaultUnity:
                     break;
                 case DragType.Linear:
-                    m_Rigidbody.AddForce(-velocity * PhysicsSettings.DirectionalDrag, ForceMode2D.Force);
+                    m_Rigidbody.AddForce(-velocity * PhysicsSettings.DirectionalDrag);
                     break;
                 case DragType.Quadratic:
                     float magnitude = velocity.magnitude;
                     Vector2 normalized = velocity.normalized;
-                    m_Rigidbody.AddForce(-normalized * magnitude *  magnitude * PhysicsSettings.DirectionalDrag,
-                        ForceMode2D.Force);
+                    m_Rigidbody.AddForce(-normalized * magnitude *  magnitude * PhysicsSettings.DirectionalDrag);
                     break;
             }
             

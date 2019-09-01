@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.SqlServer.Server;
+using SceneLoading;
+using UnityEngine;
 
 namespace Util.EventBusSystem
 {
@@ -9,91 +12,118 @@ namespace Util.EventBusSystem
         private static readonly Dictionary<Type, List<GlobalSubscriberNode>> s_GlobalSubscribers 
             = new Dictionary<Type, List<GlobalSubscriberNode>>();
 
-        private static object m_Lock = new object();
-
-        private static EventBusCleaner m_EventBusCleaner;
+        private static bool s_IsIterating = false;
 
         static EventBus()
         {
-            m_EventBusCleaner = new EventBusCleaner(s_GlobalSubscribers, m_Lock, 5f);
+            SceneLoader.AddWaitPredicate(() => !s_IsIterating);
         }
 
         public static IDisposable Subscribe(IGlobalSubscriber subscriber)
         {
             List<Type> implementedGlobalSubscribers = EventBusHelper.GetImplementedGlobalSubscribers(subscriber);
 
-            lock (m_Lock)
+            bool wasIterating = s_IsIterating;
+            s_IsIterating = true;
+            
+            foreach (Type interfaceType in implementedGlobalSubscribers)
             {
-                foreach (Type interfaceType in implementedGlobalSubscribers)
+                List<GlobalSubscriberNode> correspondingList;
+                if (s_GlobalSubscribers.ContainsKey(interfaceType))
                 {
-                    List<GlobalSubscriberNode> correspondingList;
-                    if (s_GlobalSubscribers.ContainsKey(interfaceType))
-                    {
-                        correspondingList = s_GlobalSubscribers[interfaceType];
-                    }
-                    else
-                    {
-                        correspondingList = new List<GlobalSubscriberNode>();
-                        s_GlobalSubscribers[interfaceType] = correspondingList;
-                    }
-
-                    correspondingList.Add(new GlobalSubscriberNode(subscriber));
+                    correspondingList = s_GlobalSubscribers[interfaceType];
                 }
+                else
+                {
+                    correspondingList = new List<GlobalSubscriberNode>();
+                    s_GlobalSubscribers[interfaceType] = correspondingList;
+                }
+
+                correspondingList.Add(new GlobalSubscriberNode(subscriber));
+            }
+
+            s_IsIterating = wasIterating;
+            if (!s_IsIterating)
+            {
+                CleanUp();
             }
 
             return new DisposableEventBusSubscriber(subscriber);
-        }
-        
-        public static void Unsubscribe(IGlobalSubscriber subscriber)
-        {
-            List<Type> implementedGlobalSubscribers = EventBusHelper.GetImplementedGlobalSubscribers(subscriber);
-
-            lock (m_Lock)
-            {
-                foreach (Type interfaceType in implementedGlobalSubscribers)
-                {
-                    if (s_GlobalSubscribers.ContainsKey(interfaceType))
-                    {
-                        s_GlobalSubscribers[interfaceType]
-                            .FirstOrDefault(node => node.SubscriberEquals(subscriber))
-                            ?.Release();
-                    }
-                }
-            }
         }
 
         public static void TriggerEvent<TSubscriber>(Action<TSubscriber> action) where TSubscriber : IGlobalSubscriber
         {
             List<Type> nestedInterfaces = EventBusHelper.GetNestedInterfaces(typeof(TSubscriber));
 
-            lock (m_Lock)
+            bool wasIterating = s_IsIterating;
+            s_IsIterating = true;
+            
+            foreach (Type nestedInterface in nestedInterfaces)
             {
-                foreach (Type nestedInterface in nestedInterfaces)
+                if (s_GlobalSubscribers.ContainsKey(nestedInterface))
                 {
-                    if (s_GlobalSubscribers.ContainsKey(nestedInterface))
+                    foreach (GlobalSubscriberNode globalSubscriber in s_GlobalSubscribers[nestedInterface])
                     {
-                        foreach (GlobalSubscriberNode globalSubscriber in s_GlobalSubscribers[nestedInterface])
+                        if (!globalSubscriber.IsReleased)
                         {
-                            if (!globalSubscriber.IsReleased)
-                            {
-                                globalSubscriber.TriggerEventOnSubscriber(action);
-                            }
+                            globalSubscriber.TriggerAction(action);
                         }
                     }
                 }
             }
+            
+            s_IsIterating = wasIterating;
+            if (!s_IsIterating)
+            {
+                CleanUp();
+            }
         }
         
-        public class GlobalSubscriberNode
+        private static void Unsubscribe(IGlobalSubscriber subscriber)
         {
-            private IGlobalSubscriber m_Subscriber;
+            List<Type> implementedGlobalSubscribers = EventBusHelper.GetImplementedGlobalSubscribers(subscriber);
+
+            foreach (Type interfaceType in implementedGlobalSubscribers)
+            {
+                if (s_GlobalSubscribers.ContainsKey(interfaceType))
+                {
+                    List<GlobalSubscriberNode> subscribers = s_GlobalSubscribers[interfaceType];
+                    subscribers.FirstOrDefault(node => node.SubscriberEquals(subscriber))?.Release();
+                }
+            }
+
+            if (!s_IsIterating)
+            {
+                CleanUp();
+            }
+        }
+
+        private static void CleanUp()
+        {
+            foreach (Type type in s_GlobalSubscribers.Keys)
+            {
+                s_GlobalSubscribers[type].RemoveAll(subscriber => subscriber.IsReleased);
+            }
+
+            List<Type> typesToBeRemoved = s_GlobalSubscribers.Keys
+                .Where(k => s_GlobalSubscribers[k].Count == 0).ToList();
+            
+            foreach (Type type in typesToBeRemoved)
+            {
+                s_GlobalSubscribers.Remove(type);
+            }
+        }
+
+        private class GlobalSubscriberNode
+        {
+            private readonly IGlobalSubscriber m_GlobalSubscriber;
             private bool m_IsReleased = false;
             
-            public bool IsReleased => m_IsReleased;
+            public bool IsReleased => m_IsReleased || m_GlobalSubscriber == null;
 
-            public GlobalSubscriberNode(IGlobalSubscriber subscriber)
+            public GlobalSubscriberNode(IGlobalSubscriber globalSubscriber)
             {
-                m_Subscriber = subscriber;
+                m_GlobalSubscriber = globalSubscriber;
             }
 
             public void Release()
@@ -101,20 +131,34 @@ namespace Util.EventBusSystem
                 m_IsReleased = true;
             }
 
-            public void TriggerEventOnSubscriber<TSubscriber>(Action<TSubscriber> action)
-                where TSubscriber : IGlobalSubscriber
+            public bool SubscriberEquals(IGlobalSubscriber globalSubscriber)
             {
-                if (m_IsReleased)
+                return m_GlobalSubscriber == globalSubscriber;
+            }
+
+            public void TriggerAction<TSubscriber>(Action<TSubscriber> action) where TSubscriber : IGlobalSubscriber
+            {
+                if (IsReleased || !(m_GlobalSubscriber is TSubscriber))
                 {
                     return;
                 }
-                TSubscriber implementedSubscriber = (TSubscriber)m_Subscriber;
-                action.Invoke(implementedSubscriber);
+                TSubscriber explicitSubscriber = (TSubscriber) m_GlobalSubscriber;
+                action(explicitSubscriber);
+            }
+        }
+        
+        public class DisposableEventBusSubscriber : IDisposable
+        {
+            private readonly IGlobalSubscriber m_GlobalSubscriber;
+
+            public DisposableEventBusSubscriber(IGlobalSubscriber globalSubscriber)
+            {
+                m_GlobalSubscriber = globalSubscriber;
             }
 
-            public bool SubscriberEquals(IGlobalSubscriber subscriber)
+            public void Dispose()
             {
-                return m_Subscriber == subscriber;
+                Unsubscribe(m_GlobalSubscriber);
             }
         }
     }

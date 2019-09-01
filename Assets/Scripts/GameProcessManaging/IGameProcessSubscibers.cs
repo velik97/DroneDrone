@@ -12,6 +12,16 @@ namespace GameProcessManaging
         void HandleRestartGame();
     }
 
+    public interface IGoToMenuHandler : IGlobalSubscriber
+    {
+        void HandleGoToMenu();
+    }
+
+    public interface IGoToNextLevelHandler : IGlobalSubscriber
+    {
+        void HandleGoToNextLevel();
+    }
+
     public interface IGamePauseHandler : IGlobalSubscriber
     {
         void HandlePause();

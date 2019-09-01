@@ -31,7 +31,7 @@ namespace LevelProgression
             {
                 m_DroneRailsInTouchCount--;
                 
-                if (m_DroneRailsInTouchCount == 0)
+                if (m_DroneRailsInTouchCount < 2)
                 {
                     EventBus.TriggerEvent<IFinishLandingHandler>(h => h.HandleInterruptedFinishLanding());
                 }

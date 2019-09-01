@@ -38,11 +38,15 @@ namespace UI.MVVM
             m_Disposables.Add(disposable);
         }
 
+        private void OnDestroy()
+        {
+            Dispose();
+        }
+
         private void Dispose()
         {
             if (m_IsDisposed)
             {
-                Debug.LogError($"[{GetType()}] is already disposed, but you are trying to do it again!");
                 return;
             }
             Unbind();

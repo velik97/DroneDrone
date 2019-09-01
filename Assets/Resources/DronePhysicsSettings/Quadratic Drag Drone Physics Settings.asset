@@ -15,8 +15,33 @@ MonoBehaviour:
   m_Mass: 1
   m_OneEngineLinearForce: 20
   m_TwoEnginesLinearForce: 40
-  m_AngularForce: 8
+  m_Torque: 10
   m_DirectionalDragType: 2
   m_DirectionalDrag: 0.015
   m_AngularDragType: 2
   m_AngularDrag: 0.00001
+  m_MaxAngularSpeed: 1000
+  m_TorqueFromAngularSpeedCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4

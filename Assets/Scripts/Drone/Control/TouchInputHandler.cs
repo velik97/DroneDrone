@@ -9,7 +9,7 @@ namespace Drone.Control
 
         public TouchInputHandler()
         {
-            m_DisplayXCoordinate = Screen.width;
+            m_DisplayXCoordinate = Screen.width / 2;
         }
 
         public bool RightIsPressed()

@@ -9,11 +9,11 @@ namespace GameProcessManaging
         public static GameOverAndFinishSettings Instance => AssetRoot.Instance.GameOverAndFinishSettings;
         
         [SerializeField]
-        private float m_GameOverCountDown;
+        private int m_GameOverCountDown;
         [SerializeField]
-        private float m_GameFinishCountDown;
+        private int m_GameFinishCountDown;
 
-        public float GameOverCountDown => m_GameOverCountDown;
-        public float GameFinishCountDown => m_GameFinishCountDown;
+        public int GameOverCountDown => m_GameOverCountDown;
+        public int GameFinishCountDown => m_GameFinishCountDown;
     }
 }

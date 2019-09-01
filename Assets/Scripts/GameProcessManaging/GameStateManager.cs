@@ -1,24 +1,36 @@
 using System;
+using SceneLoading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using Util;
 using Util.EventBusSystem;
 using Util.GlobalInitializationSystem;
 
 namespace GameProcessManaging
 {
-    public class GameStateManager : IGlobalInitializableInGame, IRestartGameHandler, IGamePauseHandler
-    {
-        private readonly IDisposable m_Subscription;
-        
+    public class GameStateManager : BaseDisposable,
+        IGlobalInitializableInGame,
+        IRestartGameHandler,
+        IGoToNextLevelHandler,
+        IGamePauseHandler,
+        IGoToMenuHandler
+    {        
         public GameStateManager()
         {
-            m_Subscription = EventBus.Subscribe(this);
+        }
+
+        public InitializePrior InitializePrior => InitializePrior.UsualAwake;
+
+        public void Initialize()
+        {
+            AddDisposable(EventBus.Subscribe(this));
         }
         
         public void HandleRestartGame()
         {
-            Time.timeScale = 1f;
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            HandleUnPause();
+            SceneLoader.LoadCurrentScene();
         }
 
         public void HandlePause()
@@ -31,9 +43,17 @@ namespace GameProcessManaging
             Time.timeScale = 1f;
         }
         
-        public void Dispose()
+        public void HandleGoToMenu()
         {
-            m_Subscription.Dispose();
+            HandleUnPause();
+            // Todo исправить на норм логику, пока переносит на первый уровень
+            SceneLoader.LoadScene(LevelScenesList.Instance.GetFirstSceneName());
+        }
+        
+        public void HandleGoToNextLevel()
+        {
+            HandleUnPause();
+            SceneLoader.LoadScene(LevelScenesList.Instance.GetNextSceneName());
         }
     }
 }

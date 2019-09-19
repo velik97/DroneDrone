@@ -291,7 +291,7 @@
             <e p="SceneNames.cs" t="Include" />
             <e p="StringRoot.cs" t="Include" />
           </e>
-          <e p="Camera" t="Include">
+          <e p="CameraFollow" t="Include">
             <e p="FollowTargetPosition.cs" t="Include" />
           </e>
           <e p="Drone" t="Include">
@@ -380,7 +380,6 @@
           </e>
           <e p="Util" t="Include">
             <e p="AsyncTaskManager.cs" t="Include" />
-            <e p="BaseDisposable.cs" t="Include" />
             <e p="Collider2DWithEvents.cs" t="Include" />
             <e p="CoroutineHandler" t="Include">
               <e p="CoroutineHandler.cs" t="Include" />
@@ -390,15 +389,17 @@
             <e p="DebugUtils" t="Include">
               <e p="PerformanceWindow.cs" t="Include" />
             </e>
+            <e p="DisposableContainer.cs" t="Include" />
+            <e p="DisposableContainerMonoBehaviour.cs" t="Include" />
+            <e p="DisposableEvent.cs" t="Include" />
+            <e p="DisposeAction.cs" t="Include" />
             <e p="EventBusSystem" t="Include">
-              <e p="DisposableEventBusSubscriber.cs" t="Include" />
               <e p="EventBus.cs" t="Include" />
               <e p="EventBusHelper.cs" t="Include" />
               <e p="IGlobalSubscriber.cs" t="Include" />
             </e>
             <e p="Extensions.cs" t="Include" />
             <e p="GlobalInitializationSystem" t="Include">
-              <e p="DisposableMonoBehaviour.cs" t="Include" />
               <e p="GlobalInitializer.cs" t="Include" />
               <e p="GlobalInitializerHelper.cs" t="Include" />
               <e p="IDestroySceneHandler.cs" t="Include" />

@@ -7,8 +7,9 @@ using Util.EventBusSystem;
 
 namespace UI.BadSignalWarningMenu
 {
-    public class BadSignalWarningVM : ViewModel, IDroneBadSignalZoneHandler, IGameOverCountDownPercentageHandler
+    public class BadSignalWarningVM : ViewModel, IDroneBadSignalZoneHandler, IGameOverCountDownPercentageHandler, IRestoreStateHandler
     {
+        public ReactiveCommand OnRestore = new ReactiveCommand();
         public FloatReactiveProperty BadSignalPercentage = new FloatReactiveProperty();
         public string WarningText => StringRoot.Instance.BadSignalWarning;
 
@@ -35,6 +36,12 @@ namespace UI.BadSignalWarningMenu
             {
                 BadSignalPercentage.Value = percentage;
             }
+        }
+
+        public void HandleRestoreState()
+        {
+            HandleEscapedBadSignalZone();
+            OnRestore.Execute();
         }
     }
 }

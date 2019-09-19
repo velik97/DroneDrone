@@ -5,7 +5,7 @@ using Util.GlobalInitializationSystem;
 
 namespace UnityEngine.UI
 {
-    public class MainMenuContext : BaseDisposable, IGlobalInitializableInMainMenu
+    public class MainMenuContext : DisposableContainer, IGlobalInitializableInMainMenu
     {
         private ChooseLevelMenuVM m_ChooseLevelMenuVm;
 

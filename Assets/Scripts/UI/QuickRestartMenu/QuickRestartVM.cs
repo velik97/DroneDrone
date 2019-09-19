@@ -6,7 +6,7 @@ using Util.EventBusSystem;
 
 namespace DefaultNamespace
 {
-    public class QuickRestartVM : ViewModel, IDroneBladesDamageHandler, IGameOverCountDownHandler, IGameFinishCountDownHandler
+    public class QuickRestartVM : ViewModel, IDroneBladesDamageHandler, IGameOverCountDownHandler, IGameFinishCountDownHandler, IRestoreStateHandler
     {
         public ReactiveCommand OnOpen = new ReactiveCommand();
         public ReactiveCommand OnClose = new ReactiveCommand();
@@ -20,7 +20,7 @@ namespace DefaultNamespace
 
         public void RestartGame()
         {
-            EventBus.TriggerEvent<IRestartGameHandler>(h => h.HandleRestartGame());
+            EventBus.TriggerEvent<IRestartGameRequestHandler>(h => h.HandleRestartGame());
         }
 
         public void HandleOneEngineIsBroken()
@@ -48,7 +48,7 @@ namespace DefaultNamespace
 
         public void HandleCompleteGameFinishCountDown()
         {
-            Dispose();
+            OnClose.Execute();
         }
 
         public void HandleStartGameOverCountDown()
@@ -66,7 +66,12 @@ namespace DefaultNamespace
 
         public void HandleCompleteGameOverCountDown()
         {
-            Dispose();
+            OnClose.Execute();
+        }
+
+        public void HandleRestoreState()
+        {
+            OnClose.Execute();
         }
     }
 }

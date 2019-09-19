@@ -1,5 +1,6 @@
 using System;
 using Drone.Control;
+using GameProcessManaging;
 using UnityEngine;
 using Util;
 using Util.EventBusSystem;
@@ -7,7 +8,7 @@ using Util.EventBusSystem;
 namespace Drone.Defects
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class DroneBladesDamageController : MonoBehaviour, IEnginesStateModifier
+    public class DroneBladesDamageController : DisposableContainerMonoBehaviour, IEnginesStateModifier, IRestoreStateHandler
     {
         [SerializeField]
         private Collider2DWithEvents m_RightBladesCollider;
@@ -19,6 +20,7 @@ namespace Drone.Defects
         private GameObject m_RightBladesObject;
         [SerializeField]
         private GameObject m_LeftBladesObject;
+
         [SerializeField]
         private float m_ImpactForce;
 
@@ -35,8 +37,10 @@ namespace Drone.Defects
         private void Initialize()
         {
             m_Rigidbody = GetComponent<Rigidbody2D>();
-            m_RightBladesCollider.OnTriggerEnter2DEvent += CheckRightBladeForDamage;
-            m_LeftBladesCollider.OnTriggerEnter2DEvent += CheckLeftBladeForDamage;
+            AddDisposable(m_RightBladesCollider.OnTriggerEnter2DEvent.Subscribe(CheckRightBladeForDamage));
+            AddDisposable(m_LeftBladesCollider.OnTriggerEnter2DEvent.Subscribe(CheckLeftBladeForDamage));
+            
+            AddDisposable(EventBus.Subscribe(this));
         }
 
         private void CheckRightBladeForDamage(Collider2D touchedCollider)
@@ -101,10 +105,13 @@ namespace Drone.Defects
             return m_LeftEngineIsWorking;
         }
 
-        private void OnDestroy()
+        public void HandleRestoreState()
         {
-            m_RightBladesCollider.OnTriggerEnter2DEvent -= CheckRightBladeForDamage;
-            m_LeftBladesCollider.OnTriggerEnter2DEvent -= CheckLeftBladeForDamage;        
+            m_RightBladesObject.SetActive(true);
+            m_LeftBladesObject.SetActive(true);
+
+            m_RightEngineIsWorking = true;
+            m_LeftEngineIsWorking = true;
         }
     }
 }

@@ -10,7 +10,7 @@ using Util.GlobalInitializationSystem;
 
 namespace UnityEngine.UI
 {
-    public class InGameContext : BaseDisposable, IGlobalInitializableInGame
+    public class InGameContext : DisposableContainer, IGlobalInitializableInGame
     {
         private QuickRestartVM m_QuickRestartVm;
         private PauseMenuVM m_PauseMenuVm;

@@ -23,6 +23,7 @@ namespace UI.WinMenu
             AddDisposable(m_GoToMainMenuButton.onClick.AsObservable().Subscribe(_ => viewModel.GoToMainMenu()));
             
             AddDisposable(viewModel.OnGameFinish.Subscribe(_ => Open()));
+            AddDisposable(viewModel.OnRestore.Subscribe(_ => Close()));
             
             m_GoToNextLevel.gameObject.SetActive(viewModel.HasNextLevel);
             

@@ -1,11 +1,14 @@
 ﻿using System;
 using Drone.Control;
+using GameProcessManaging;
 using UnityEngine;
+using Util;
+using Util.EventBusSystem;
 
 namespace Drone.Physics
 {
     [RequireComponent(typeof(Rigidbody2D), typeof(DroneControl))]
-    public abstract class DronePhysicsBase : MonoBehaviour
+    public abstract class DronePhysicsBase : DisposableContainerMonoBehaviour, IRestoreStateHandler
     {
         [SerializeField]
         protected DronePhysicsSettings PhysicsSettings;
@@ -19,7 +22,10 @@ namespace Drone.Physics
         protected float Torque = 0f;
         protected float DirectionalForce = 0f;
 
-        protected float AngularVelocity => m_Rigidbody?.angularVelocity ?? 0f;  
+        protected float AngularVelocity => m_Rigidbody?.angularVelocity ?? 0f;
+
+        private Vector3 m_StartPosition;
+        private Quaternion m_StartRotation;
 
         private void Awake()
         {
@@ -59,6 +65,11 @@ namespace Drone.Physics
 
             DroneControl droneControl = GetComponent<DroneControl>();
             droneControl.SubscribeOnControl(this);
+
+            m_StartPosition = transform.position;
+            m_StartRotation = transform.rotation;
+            
+            AddDisposable(EventBus.Subscribe(this));
         }
 
         private void SetRigidBodyParams()
@@ -114,6 +125,15 @@ namespace Drone.Physics
                     m_Rigidbody.AddTorque(- sign * angularVelocity * angularVelocity * PhysicsSettings.AngularDrag);
                     break;
             }
+        }
+
+        public void HandleRestoreState()
+        {
+            transform.position = m_StartPosition;
+            transform.rotation = m_StartRotation;
+            
+            m_Rigidbody.velocity = Vector2.zero;
+            m_Rigidbody.angularVelocity = 0f;
         }
     }
 }

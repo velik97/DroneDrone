@@ -2,12 +2,7 @@ using Util.EventBusSystem;
 
 namespace GameProcessManaging
 {
-    public interface IStartGameHandler : IGlobalSubscriber
-    {
-        void HandleStartGame();
-    }
-    
-    public interface IRestartGameHandler : IGlobalSubscriber
+    public interface IRestartGameRequestHandler : IGlobalSubscriber
     {
         void HandleRestartGame();
     }
@@ -31,6 +26,11 @@ namespace GameProcessManaging
     public interface IGameOverHandler : IGlobalSubscriber
     {
         void HandleGameOver();
+    }
+
+    public interface IRestoreStateHandler : IGlobalSubscriber
+    {
+        void HandleRestoreState();
     }
     
     public interface IGameFinishHandler : IGlobalSubscriber

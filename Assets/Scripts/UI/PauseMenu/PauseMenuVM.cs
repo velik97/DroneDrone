@@ -1,13 +1,15 @@
 using GameProcessManaging;
 using UI.MVVM;
 using UniRx;
-using UnityEngine.EventSystems;
 using Util.EventBusSystem;
 
 namespace UI.PauseMenu
 {
-    public class PauseMenuVM : ViewModel, IGameOverHandler, IGameFinishHandler
-    {        
+    public class PauseMenuVM : ViewModel, IGameOverHandler, IGameFinishHandler, IRestoreStateHandler
+    {
+        public ReactiveCommand OnGameFinishedOrOver = new ReactiveCommand();
+        public ReactiveCommand OnRestore = new ReactiveCommand();
+        
         public PauseMenuVM()
         {
             AddDisposable(EventBus.Subscribe(this));
@@ -25,7 +27,7 @@ namespace UI.PauseMenu
 
         public void RestartGame()
         {
-            EventBus.TriggerEvent<IRestartGameHandler>(h => h.HandleRestartGame());
+            EventBus.TriggerEvent<IRestartGameRequestHandler>(h => h.HandleRestartGame());
         }
 
         public void GoToMainMenu()
@@ -35,12 +37,17 @@ namespace UI.PauseMenu
 
         public void HandleGameOver()
         {
-            Dispose();
+            OnGameFinishedOrOver.Execute();
         }
 
         public void HandleGameFinish()
         {
-            Dispose();
+            OnGameFinishedOrOver.Execute();
+        }
+
+        public void HandleRestoreState()
+        {
+            OnRestore.Execute();
         }
     }
 }

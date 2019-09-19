@@ -5,7 +5,7 @@ using Util;
 
 namespace UI.MVVM
 {
-    public abstract class ViewModel : BaseDisposable
+    public abstract class ViewModel : DisposableContainer
     {
     }
 }

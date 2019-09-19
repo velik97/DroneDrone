@@ -48,7 +48,7 @@ namespace Util.EventBusSystem
                 CleanUp();
             }
 
-            return new DisposableEventBusSubscriber(subscriber);
+            return new DisposeAction(() => Unsubscribe(subscriber));
         }
 
         public static void TriggerEvent<TSubscriber>(Action<TSubscriber> action) where TSubscriber : IGlobalSubscriber
@@ -144,21 +144,6 @@ namespace Util.EventBusSystem
                 }
                 TSubscriber explicitSubscriber = (TSubscriber) m_GlobalSubscriber;
                 action(explicitSubscriber);
-            }
-        }
-        
-        public class DisposableEventBusSubscriber : IDisposable
-        {
-            private readonly IGlobalSubscriber m_GlobalSubscriber;
-
-            public DisposableEventBusSubscriber(IGlobalSubscriber globalSubscriber)
-            {
-                m_GlobalSubscriber = globalSubscriber;
-            }
-
-            public void Dispose()
-            {
-                Unsubscribe(m_GlobalSubscriber);
             }
         }
     }

@@ -7,7 +7,7 @@ using Util.EventBusSystem;
 
 namespace UI.GameOverPanel
 {
-    public class GameOverPanelVM : ViewModel, IGameOverCountDownHandler, IGameOverCountDownPercentageHandler
+    public class GameOverPanelVM : ViewModel, IGameOverCountDownHandler, IGameOverCountDownPercentageHandler, IRestoreStateHandler
     {       
         public StringReactiveProperty GameOverCountDownText = new StringReactiveProperty();
         public ReactiveCommand OnOpen = new ReactiveCommand();
@@ -26,7 +26,7 @@ namespace UI.GameOverPanel
 
         public void RestartGame()
         {
-            EventBus.TriggerEvent<IRestartGameHandler>(h => h.HandleRestartGame());
+            EventBus.TriggerEvent<IRestartGameRequestHandler>(h => h.HandleRestartGame());
         }
 
         public void GoToMainMenu()
@@ -64,6 +64,11 @@ namespace UI.GameOverPanel
             GameOverCountDownText.Value = m_LastSecondsShown != 0
                 ? string.Format(StringRoot.Instance.GameOverCountDownText, m_LastSecondsShown)
                 : StringRoot.Instance.GameOverText;
+        }
+
+        public void HandleRestoreState()
+        {
+            HandleInterruptGameOverCountDown();
         }
     }
 }

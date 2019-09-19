@@ -24,6 +24,9 @@ namespace UI.PauseMenu
         {
             base.Bind(viewModel);
             
+            AddDisposable(viewModel.OnGameFinishedOrOver.Subscribe(_ => HidePauseButton()));
+            AddDisposable(viewModel.OnRestore.Subscribe(_ => ShowPauseButton()));
+            
             AddDisposable(m_InGamePauseButton.onClick.AsObservable().Subscribe(_ => viewModel.PauseGame()));
             AddDisposable(m_ContinueButton.onClick.AsObservable().Subscribe(_ => viewModel.UnPauseGame()));
             
@@ -49,9 +52,20 @@ namespace UI.PauseMenu
             m_MenuObject.SetActive(false);
         }
 
-        protected override void DestroyViewImplementation()
+        private void ShowPauseButton()
+        {
+            gameObject.SetActive(true);
+            CloseMenu();
+        }
+
+        private void HidePauseButton()
         {
             gameObject.SetActive(false);
+            CloseMenu();
+        }
+
+        protected override void DestroyViewImplementation()
+        {
         }
     }
 }

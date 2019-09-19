@@ -5,9 +5,9 @@ namespace Util
 {
     public class Collider2DWithEvents : MonoBehaviour
     {
-        public event Action<Collider2D> OnTriggerEnter2DEvent;
-        public event Action<Collider2D> OnTriggerStay2DEvent;
-        public event Action<Collider2D> OnTriggerExit2DEvent;
+        public DisposableEvent<Collider2D> OnTriggerEnter2DEvent = new DisposableEvent<Collider2D>();
+        public DisposableEvent<Collider2D> OnTriggerStay2DEvent = new DisposableEvent<Collider2D>();
+        public DisposableEvent<Collider2D> OnTriggerExit2DEvent = new DisposableEvent<Collider2D>();
 
         private void OnTriggerEnter2D(Collider2D other)
         {

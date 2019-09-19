@@ -10,15 +10,15 @@ using Util.GlobalInitializationSystem;
 
 namespace GameProcessManaging
 {
-    public class GameStateManager : BaseDisposable,
+    public class GameRequestStateManager : DisposableContainer,
         IGlobalInitializableInGame,
-        IRestartGameHandler,
+        IRestartGameRequestHandler,
         IGamePauseHandler,
         IGoToNextLevelHandler,
         IGoToMenuHandler,
         IGameFinishHandler
     {        
-        public GameStateManager()
+        public GameRequestStateManager()
         {
         }
 
@@ -32,7 +32,7 @@ namespace GameProcessManaging
         public void HandleRestartGame()
         {
             HandleUnPause();
-            SceneLoader.LoadCurrentScene();
+            EventBus.TriggerEvent<IRestoreStateHandler>(h => h.HandleRestoreState());
         }
 
         public void HandlePause()

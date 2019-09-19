@@ -5,7 +5,7 @@ using Util.EventBusSystem;
 
 namespace Util.GlobalInitializationSystem
 {
-    public class GlobalInitializer : DisposableMonoBehaviour, IDestroySceneHandler
+    public class GlobalInitializer : DisposableContainerMonoBehaviour, IDestroySceneHandler
     {
         [SerializeField]
         private SceneType m_SceneType;

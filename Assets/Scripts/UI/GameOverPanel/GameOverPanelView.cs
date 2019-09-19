@@ -42,6 +42,7 @@ namespace UI.GameOverPanel
         private void Close()
         {
             gameObject.SetActive(false);
+            m_GameOverButtonsObject.SetActive(false);
         }
 
         private void SetGameOverText(string text)

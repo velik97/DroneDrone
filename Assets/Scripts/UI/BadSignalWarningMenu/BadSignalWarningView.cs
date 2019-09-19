@@ -13,6 +13,11 @@ namespace UI.BadSignalWarningMenu
         private Text m_BadSignalText;
 
         [SerializeField]
+        private GameObject m_BadSignalImageObject;
+        [SerializeField]
+        private GameObject m_BadSignalTextObject;
+
+        [SerializeField]
         private float m_Speed;
         
         private float m_AimVisibility = 0f;
@@ -22,13 +27,23 @@ namespace UI.BadSignalWarningMenu
         {
             base.Bind(viewModel);
             
+            m_BadSignalImageObject.SetActive(true);
+            m_BadSignalTextObject.SetActive(true);
+            
             AddDisposable(viewModel.BadSignalPercentage.Subscribe(SetVisibility));
+            AddDisposable(viewModel.OnRestore.Subscribe(_ => SetForceVisibility(0f)));
             m_BadSignalText.text = viewModel.WarningText;
         }
 
         private void SetVisibility(float value)
         {
             m_AimVisibility = value;
+        }
+
+        private void SetForceVisibility(float value)
+        {
+            m_AimVisibility = value;
+            m_CurrentVisibility = value;
         }
 
         private void Update()

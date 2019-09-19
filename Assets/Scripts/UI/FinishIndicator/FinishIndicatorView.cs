@@ -17,44 +17,34 @@ namespace UI.FinishIndicator
         [SerializeField]
         private Color m_FinishColor;
 
-        private float m_Aim = 0f;
+        private float m_AimValue = 0f;
         private float m_CurrentValue = 0f;
 
         public override void Bind(FinishIndicatorVM viewModel)
         {
             base.Bind(viewModel);
             
+            AddDisposable(viewModel.OnRestore.Subscribe(_ => SetForcePercentage(0f)));
             AddDisposable(viewModel.FinishCountDownPercentage.Subscribe(SetPercentage));
-            AddDisposable(viewModel.OnFinish.Subscribe(_ => SetFinishColor()));
-            
-            SetUsualColor();
-        }
-        
-        private void Update()
-        {
-            m_CurrentValue = Mathf.Lerp(m_CurrentValue, m_Aim, Time.deltaTime * m_Speed);
-
-            m_BarImage.fillAmount = m_CurrentValue;
         }
         
         private void SetPercentage(float value)
         {
-            m_Aim = value;
-        } 
+            m_AimValue = value;
+        }
         
-        private void SetUsualColor()
+        private void SetForcePercentage(float value)
         {
-            SetColor(m_UsualColor);
+            m_AimValue = value;
+            m_CurrentValue = value;
         }
-
-        private void SetFinishColor()
+        
+        private void Update()
         {
-            SetColor(m_FinishColor);
-        }
+            m_CurrentValue = Mathf.Lerp(m_CurrentValue, m_AimValue, Time.deltaTime * m_Speed);
 
-        private void SetColor(Color c)
-        {
-            m_BarImage.color = c;
+            m_BarImage.fillAmount = m_CurrentValue;
+            m_BarImage.color = Color.Lerp(m_UsualColor, m_FinishColor, m_CurrentValue);
         }
 
         protected override void DestroyViewImplementation()

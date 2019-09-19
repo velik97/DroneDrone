@@ -6,7 +6,7 @@ using Util.EventBusSystem;
 
 namespace Drone.Control
 {
-    public class BadSignalController : MonoBehaviour, IEnginesStateModifier
+    public class BadSignalController : DisposableContainerMonoBehaviour, IEnginesStateModifier
     {
         [SerializeField]
         private Collider2DWithEvents m_ReceiverCollider;
@@ -22,8 +22,8 @@ namespace Drone.Control
 
         public void Initialize()
         {            
-            m_ReceiverCollider.OnTriggerEnter2DEvent += OnReceiverEnteredCollider;
-            m_ReceiverCollider.OnTriggerExit2DEvent += OnReceiverEscapedCollider;
+            AddDisposable(m_ReceiverCollider.OnTriggerEnter2DEvent.Subscribe(OnReceiverEnteredCollider));
+            AddDisposable(m_ReceiverCollider.OnTriggerExit2DEvent.Subscribe(OnReceiverEscapedCollider));
         }
 
         private void OnReceiverEnteredCollider(Collider2D collider)
@@ -58,12 +58,6 @@ namespace Drone.Control
         public bool ModifiedLeftEngineState()
         {
             return m_BadSignalZonesTouching == 0;
-        }
-
-        private void OnDestroy()
-        {
-            m_ReceiverCollider.OnTriggerEnter2DEvent -= OnReceiverEnteredCollider;
-            m_ReceiverCollider.OnTriggerExit2DEvent -= OnReceiverEscapedCollider;
         }
     }
 }

@@ -2,17 +2,18 @@ using System;
 using Drone.Physics;
 using GameProcessManaging;
 using UniRx;
+using Util;
 using Util.EventBusSystem;
 using Util.GlobalInitializationSystem;
 
 namespace Drone.Control
 {
-    public class DroneControl : DisposableMonoBehaviour,
+    public class DroneControl : DisposableContainerMonoBehaviour,
         IGamePauseHandler,
         IGameOverHandler,
         IGameFinishHandler,
         IDestroySceneHandler,
-        IDisposable
+        IRestoreStateHandler
     {
         private bool m_RightWasPressed = false;
         private bool m_LeftWasPressed = false;
@@ -25,6 +26,8 @@ namespace Drone.Control
         private IInputHandler m_InputHandler;
 
         private DronePhysicsBase m_Physics;
+
+        private bool m_ControlIsSuppressed = false;
 
         private void Start()
         {
@@ -52,15 +55,22 @@ namespace Drone.Control
             AddDisposable(OnLeftIsJustReleased.Subscribe(_ => m_Physics.TurnOffLeft()));
         }
 
-        private void ReleaseControl()
+        private void SuppressControl()
         {
             m_Physics.TurnOffLeft();
             m_Physics.TurnOffRight();
+
+            m_ControlIsSuppressed = true;
+        }
+
+        private void RestoreControl()
+        {
+            m_ControlIsSuppressed = false;
         }
 
         private void Update()
         {
-            if (IsDisposed)
+            if (m_ControlIsSuppressed || IsDisposed)
             {
                 return;
             }
@@ -96,23 +106,29 @@ namespace Drone.Control
         
         public void HandleGameOver()
         {
-            Dispose();
+            SuppressControl();
         }
 
         public void HandleGameFinish()
         {
-            Dispose();
+            SuppressControl();
         }
         
         public void HandlePause()
         {
-            ReleaseControl();
+            SuppressControl();
         }
 
         public void HandleUnPause()
         {
+            RestoreControl();
         }
 
+        public void HandleRestoreState()
+        {
+            RestoreControl();
+        }
+        
         public void HandleDestroyScene()
         {
             Dispose();

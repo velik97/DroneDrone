@@ -6,9 +6,10 @@ using Util.EventBusSystem;
 
 namespace UI.WinMenu
 {
-    public class WinMenuVM : ViewModel, IGameFinishHandler
+    public class WinMenuVM : ViewModel, IGameFinishHandler, IRestoreStateHandler
     {        
         public ReactiveCommand OnGameFinish = new ReactiveCommand();
+        public ReactiveCommand OnRestore = new ReactiveCommand();
         public bool HasNextLevel => SceneNames.Instance.HasNextLevelScene();
         
         public WinMenuVM()
@@ -23,7 +24,7 @@ namespace UI.WinMenu
         
         public void TryAgain()
         {
-            EventBus.TriggerEvent<IRestartGameHandler>(h => h.HandleRestartGame());
+            EventBus.TriggerEvent<IRestartGameRequestHandler>(h => h.HandleRestartGame());
         }
         
         public void GoToNextLevel()
@@ -34,6 +35,11 @@ namespace UI.WinMenu
         public void GoToMainMenu()
         {
             EventBus.TriggerEvent<IGoToMenuHandler>(h => h.HandleGoToMenu());
+        }
+
+        public void HandleRestoreState()
+        {
+            OnRestore.Execute();
         }
     }
 }

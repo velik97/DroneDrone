@@ -10,11 +10,12 @@ using Util.GlobalInitializationSystem;
 
 namespace GameProcessManaging
 {
-    public class GameOverAndFinishController : BaseDisposable, 
+    public class GameOverAndFinishController : DisposableContainer, 
         IGlobalInitializableInGame,
         IDroneBladesDamageHandler,
         IDroneBadSignalZoneHandler,
-        IFinishLandingHandler
+        IFinishLandingHandler,
+        IRestoreStateHandler
     {
         private bool m_EnginesAreBroken = false;
         private bool m_IsInBadSignalZone = false;
@@ -230,6 +231,17 @@ namespace GameProcessManaging
             EventBus.TriggerEvent<IGameFinishCountDownPercentageHandler>(h => h.HandleGameFinishCountDownPercentageChanged(1f));
             
             m_IsGameFinished = true;
+            UpdateState();
+        }
+
+        public void HandleRestoreState()
+        {
+            m_EnginesAreBroken = false;
+            m_IsInBadSignalZone = false;
+            m_IsLanding = false;
+            m_IsGameOver = false;
+            m_IsGameFinished = false;
+            
             UpdateState();
         }
     }

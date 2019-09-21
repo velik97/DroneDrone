@@ -4,10 +4,11 @@ using SceneLoading;
 using UI.MVVM;
 using UniRx;
 using UnityEngine.UI;
+using Util.EventBusSystem;
 
 namespace UI.ChooseLevelMenu
 {
-    public class ChooseLevelMenuVM : ViewModel
+    public class ChooseLevelMenuVM : ViewModel, ILastAvailableLevelChangedHandler
     {
         public const int BUTTONS_ON_SCREEN_COUNT = 15;
         public readonly LevelButtonVM[] LevelButtonVms;
@@ -19,6 +20,8 @@ namespace UI.ChooseLevelMenu
 
         public ChooseLevelMenuVM()
         {
+            AddDisposable(EventBus.Subscribe(this));
+            
             LevelButtonVms = new LevelButtonVM[BUTTONS_ON_SCREEN_COUNT];
 
             for (var i = 0; i < LevelButtonVms.Length; i++)
@@ -73,6 +76,11 @@ namespace UI.ChooseLevelMenu
         private void OnLevelButtonClicked(int buttonNum)
         {
             SceneLoader.LoadScene(SceneNames.Instance.GetLevelSceneName(buttonNum + m_FirstButtonNum));
+        }
+
+        public void HandleLastAvailableLevelChanged()
+        {
+            UpdateLevelButtons();
         }
     }
 }

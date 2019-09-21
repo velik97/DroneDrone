@@ -1,6 +1,7 @@
 using System;
 using DefaultNamespace;
 using UI.BadSignalWarningMenu;
+using UI.DevMenu;
 using UI.FinishIndicator;
 using UI.GameOverPanel;
 using UI.LoadingScreenPanel;
@@ -25,8 +26,9 @@ namespace UI.Config
         private WinMenuView m_WinMenuView;
         [SerializeField]
         private LoadingScreenView m_LoadingScreenView;
-        
-        
+        [SerializeField]
+        private DevMenuView m_DevMenuView;
+
         private FinishIndicatorView m_FinishIndicatorView;
         
         private FinishIndicatorView FinishIndicatorView
@@ -56,6 +58,15 @@ namespace UI.Config
             AddDisposable(m_LoadingScreenView.CreateViewModelAndBind());
 
             AddDisposable(FinishIndicatorView.CreateViewModelAndBind());
+
+            if (Debug.isDebugBuild)
+            {
+                AddDisposable(m_DevMenuView.CreateViewModelAndBind());
+            }
+            else
+            {
+                Destroy(m_DevMenuView);
+            }
         }
     }
 }

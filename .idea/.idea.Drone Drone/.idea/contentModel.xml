@@ -329,6 +329,7 @@
             <e p="LandingRegistrar.cs" t="Include" />
           </e>
           <e p="LevelsProgressManagement" t="Include">
+            <e p="ILastAvailableLevelChangedHandler.cs" t="Include" />
             <e p="LevelsProgression.cs" t="Include" />
           </e>
           <e p="SceneLoading" t="Include">
@@ -349,6 +350,10 @@
             <e p="Config" t="Include">
               <e p="InGameUIConfig.cs" t="Include" />
               <e p="MainMenuUiConfig.cs" t="Include" />
+            </e>
+            <e p="DevMenu" t="Include">
+              <e p="DevMenuView.cs" t="Include" />
+              <e p="DevMenuVM.cs" t="Include" />
             </e>
             <e p="FinishIndicator" t="Include">
               <e p="FinishIndicatorView.cs" t="Include" />

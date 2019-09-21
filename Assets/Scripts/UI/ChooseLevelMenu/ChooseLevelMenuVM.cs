@@ -24,7 +24,10 @@ namespace UI.ChooseLevelMenu
             for (var i = 0; i < LevelButtonVms.Length; i++)
             {
                 int temp = i;
-                LevelButtonVms[i] = new LevelButtonVM(() => OnLevelButtonClicked(temp));
+                LevelButtonVms[i] = new LevelButtonVM()
+                {
+                    OnClickAction = () => OnLevelButtonClicked(temp)
+                };
             }
 
             m_FirstButtonNum = LevelsProgression.LastAvailableLevel / BUTTONS_ON_SCREEN_COUNT * BUTTONS_ON_SCREEN_COUNT;

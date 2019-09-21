@@ -1,6 +1,7 @@
 using System;
 using Drone.Control;
 using GameProcessManaging;
+using UniRx;
 using UnityEngine;
 using Util;
 using Util.EventBusSystem;
@@ -37,8 +38,8 @@ namespace Drone.Defects
         private void Initialize()
         {
             m_Rigidbody = GetComponent<Rigidbody2D>();
-            AddDisposable(m_RightBladesCollider.OnTriggerEnter2DEvent.Subscribe(CheckRightBladeForDamage));
-            AddDisposable(m_LeftBladesCollider.OnTriggerEnter2DEvent.Subscribe(CheckLeftBladeForDamage));
+            AddDisposable(m_RightBladesCollider.OnTriggerEnter2DCommand.Subscribe(CheckRightBladeForDamage));
+            AddDisposable(m_LeftBladesCollider.OnTriggerEnter2DCommand.Subscribe(CheckLeftBladeForDamage));
             
             AddDisposable(EventBus.Subscribe(this));
         }

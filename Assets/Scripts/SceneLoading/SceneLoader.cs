@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Util;
 using Util.CoroutineHandler;
 using Util.EventBusSystem;
 using Util.GlobalInitializationSystem;
@@ -16,50 +17,45 @@ namespace SceneLoading
         
         public static void LoadScene(string sceneName)
         {
-            EventBus.TriggerEvent<IDestroySceneHandler>(h => h.HandleDestroyScene());
             CoroutineHandler.Instance.StartCoroutine(LoadSceneCoroutine(sceneName));
-        }
-
-        public static void LoadCurrentScene()
-        {
-            LoadScene(SceneManager.GetActiveScene().name);
         }
 
         private static IEnumerator LoadSceneCoroutine(string sceneName)
         {
-            yield return new WaitUntil(() => s_WaitPredicates.Any(predicate => predicate()));
-            LoadSceneInternal(sceneName);
-        }
+            AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName);
+
+            operation.allowSceneActivation = false;
+
+            while (operation.progress < 0.9f)
+            {
+                EventBus.TriggerEvent<IAsyncSceneLoadingProcessHandler>(h =>
+                    h.HandleAsyncSceneLoadingProcess(operation.progress / 0.9f));
+                yield return null;
+            }
+            EventBus.TriggerEvent<IAsyncSceneLoadingProcessHandler>(h =>
+                h.HandleAsyncSceneLoadingProcess(1f));
             
-        private static void LoadSceneInternal(string sceneName)
-        {
-            SceneManager.LoadScene(sceneName);
+            yield return new WaitUntil(() => s_WaitPredicates.Any(predicate => predicate()));
+            EventBus.TriggerEvent<IDestroySceneHandler>(h => h.HandleDestroyScene());
+            yield return null;
+            
+            operation.allowSceneActivation = true;
+
+            while (!operation.isDone)
+            {
+                yield return null;
+            }
         }
 
         public static IDisposable AddWaitPredicate(Func<bool> predicate)
         {
             s_WaitPredicates.Add(predicate);
-            return new DisposableWait(predicate);
+            return new DisposeAction(() => RemoveWaitPredicate(predicate));
         }
 
         private static void RemoveWaitPredicate(Func<bool> predicate)
         {
             s_WaitPredicates.Remove(predicate);
-        }
-        
-        public class DisposableWait : IDisposable
-        {
-            private readonly Func<bool> m_WaitPredicates;
-
-            public DisposableWait(Func<bool> waitPredicates)
-            {
-                m_WaitPredicates = waitPredicates;
-            }
-
-            public void Dispose()
-            {
-                RemoveWaitPredicate(m_WaitPredicates);
-            }
         }
     }
 }

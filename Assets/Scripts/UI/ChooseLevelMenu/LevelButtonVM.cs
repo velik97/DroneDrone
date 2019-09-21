@@ -11,16 +11,15 @@ namespace UI.ChooseLevelMenu
 
         public readonly StringReactiveProperty LevelName = new StringReactiveProperty();
 
-        private Action m_OnClickAction;
+        public Action OnClickAction;
 
-        public LevelButtonVM(Action onClickAction)
+        public LevelButtonVM()
         {
-            m_OnClickAction = onClickAction;
         }
 
         public void OnClick()
         {
-            m_OnClickAction?.Invoke();
+            OnClickAction?.Invoke();
         }
     }
 }

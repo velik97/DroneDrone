@@ -34,6 +34,8 @@ namespace UI.ChooseLevelMenu
                 newLevelButton.transform.SetAsLastSibling();
                 newLevelButton.Bind(viewModel.LevelButtonVms[i]);
             }
+            
+            gameObject.SetActive(true);
         }
 
         private void SetNextButtonActive(bool value)

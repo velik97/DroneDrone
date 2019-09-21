@@ -21,10 +21,5 @@ namespace Util.CoroutineHandler
         {
             Instance.StopCoroutine(enumerator);
         }
-
-        public static void StopAllCoroutinesOnHandler()
-        {
-            Instance.StopAllCoroutines();
-        }
     }
 }

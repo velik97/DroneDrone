@@ -332,6 +332,7 @@
             <e p="LevelsProgression.cs" t="Include" />
           </e>
           <e p="SceneLoading" t="Include">
+            <e p="IAsyncSceneLoadingProcessHandler.cs" t="Include" />
             <e p="SceneLoader.cs" t="Include" />
           </e>
           <e p="UI" t="Include">
@@ -346,12 +347,8 @@
               <e p="LevelButtonVM.cs" t="Include" />
             </e>
             <e p="Config" t="Include">
-              <e p="InGameConfig.cs" t="Include" />
-              <e p="MainMenuConfig.cs" t="Include" />
-            </e>
-            <e p="Context" t="Include">
-              <e p="InGameContext.cs" t="Include" />
-              <e p="MainMenuContext.cs" t="Include" />
+              <e p="InGameUIConfig.cs" t="Include" />
+              <e p="MainMenuUiConfig.cs" t="Include" />
             </e>
             <e p="FinishIndicator" t="Include">
               <e p="FinishIndicatorView.cs" t="Include" />
@@ -360,6 +357,10 @@
             <e p="GameOverPanel" t="Include">
               <e p="GameOverPanelView.cs" t="Include" />
               <e p="GameOverPanelVM.cs" t="Include" />
+            </e>
+            <e p="LoadingScreenPanel" t="Include">
+              <e p="LoadingScreenView.cs" t="Include" />
+              <e p="LoadingScreenVM.cs" t="Include" />
             </e>
             <e p="MVVM" t="Include">
               <e p="View.cs" t="Include" />
@@ -391,7 +392,6 @@
             </e>
             <e p="DisposableContainer.cs" t="Include" />
             <e p="DisposableContainerMonoBehaviour.cs" t="Include" />
-            <e p="DisposableEvent.cs" t="Include" />
             <e p="DisposeAction.cs" t="Include" />
             <e p="EventBusSystem" t="Include">
               <e p="EventBus.cs" t="Include" />

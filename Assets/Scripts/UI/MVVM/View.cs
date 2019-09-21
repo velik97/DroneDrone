@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace UI.MVVM
 {
-    public abstract class View<TViewModel> : MonoBehaviour where TViewModel : ViewModel
+    public abstract class View<TViewModel> : MonoBehaviour where TViewModel : ViewModel, new()
     {
         private bool m_IsDisposed = false;
         public bool IsDisposed => m_IsDisposed;
@@ -12,6 +12,13 @@ namespace UI.MVVM
         private readonly List<IDisposable> m_Disposables = new List<IDisposable>();
         
         protected TViewModel ViewModel;
+
+        public TViewModel CreateViewModelAndBind()
+        {
+            TViewModel vm = new TViewModel();
+            Bind(vm);
+            return vm;
+        }
 
         public virtual void Bind(TViewModel viewModel)
         {

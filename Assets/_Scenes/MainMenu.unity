@@ -290,37 +290,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1603557659 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2962269973700058782, guid: 712986ef63cee49ec93f834f6033ff28,
-    type: 3}
-  m_PrefabInstance: {fileID: 2962269975066625925}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d1492b33943e434e941435123d899fc1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!1 &1748164366 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2962269973320571019, guid: 712986ef63cee49ec93f834f6033ff28,
-    type: 3}
-  m_PrefabInstance: {fileID: 2962269975066625925}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1748164371
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1748164366}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a29003e52fbb4f84bb741e3fca6f20f4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ChooseLevelMenuView: {fileID: 1603557659}
 --- !u!1 &2063677088
 GameObject:
   m_ObjectHideFlags: 0

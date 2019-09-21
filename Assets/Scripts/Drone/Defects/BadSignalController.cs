@@ -1,5 +1,6 @@
 using System;
 using Drone.Defects;
+using UniRx;
 using UnityEngine;
 using Util;
 using Util.EventBusSystem;
@@ -22,8 +23,8 @@ namespace Drone.Control
 
         public void Initialize()
         {            
-            AddDisposable(m_ReceiverCollider.OnTriggerEnter2DEvent.Subscribe(OnReceiverEnteredCollider));
-            AddDisposable(m_ReceiverCollider.OnTriggerExit2DEvent.Subscribe(OnReceiverEscapedCollider));
+            AddDisposable(m_ReceiverCollider.OnTriggerEnter2DCommand.Subscribe(OnReceiverEnteredCollider));
+            AddDisposable(m_ReceiverCollider.OnTriggerExit2DCommand.Subscribe(OnReceiverEscapedCollider));
         }
 
         private void OnReceiverEnteredCollider(Collider2D collider)

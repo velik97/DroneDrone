@@ -9,49 +9,51 @@ namespace LevelsProgressManagement
 {
     public static class LevelsProgression
     {
-        private const string LAST_AVAILABLE_LEVEL_KEY = "Last Available Level";
+        private const string LAST_DONE_LEVEL_KEY = "Last Done Level";
 
         private static int LevelsCount => SceneNames.Instance.GetLevelsCount();
 
-        private static int s_LastAvailableLevel = -1;
+        private static int s_LastDoneLevel = int.MinValue;
+
+        public static int LastAvailableLevel => LastDoneLevel + 1 == LevelsCount ? LastDoneLevel : LastDoneLevel + 1;
         
-        public static int LastAvailableLevel
+        private static int LastDoneLevel
         {
             get
             {
-                if (s_LastAvailableLevel == -1)
+                if (s_LastDoneLevel == int.MinValue)
                 {
-                    s_LastAvailableLevel = PlayerPrefs.HasKey(LAST_AVAILABLE_LEVEL_KEY)
-                        ? PlayerPrefs.GetInt(LAST_AVAILABLE_LEVEL_KEY)
-                        : 0;
+                    s_LastDoneLevel = PlayerPrefs.HasKey(LAST_DONE_LEVEL_KEY)
+                        ? PlayerPrefs.GetInt(LAST_DONE_LEVEL_KEY)
+                        : -1;
                 }
-                return s_LastAvailableLevel;
+                return s_LastDoneLevel;
             }
-            private set
+            set
             {
-                PlayerPrefs.SetInt(LAST_AVAILABLE_LEVEL_KEY, value);
-                s_LastAvailableLevel = value;
+                PlayerPrefs.SetInt(LAST_DONE_LEVEL_KEY, value);
+                s_LastDoneLevel = value;
                 EventBus.TriggerEvent<ILastAvailableLevelChangedHandler>(h => h.HandleLastAvailableLevelChanged());
             }
         }
 
         public static void SetNextLevelAvailable()
         {
-            if (LastAvailableLevel < LevelsCount - 1)
+            if (LastDoneLevel < LevelsCount - 1)
             {
                 SendLevelAnalyticsData();
-                LastAvailableLevel += 1;
+                LastDoneLevel++;
             }
         }
         
         public static void ForceUnlockAllLevels()
         {
-            LastAvailableLevel = LevelsCount - 1;
+            LastDoneLevel = LevelsCount - 1;
         }
 
         public static void ForceLockAllLevels()
         {
-            LastAvailableLevel = 0;
+            LastDoneLevel = -1;
         }
         
         private static void SendLevelAnalyticsData()
@@ -63,7 +65,7 @@ namespace LevelsProgressManagement
             analyticsData["Total Time"] = GameStateManager.TotalTime;
             analyticsData["Restarts Count"] = GameStateManager.RestartsCount;
             
-            AnalyticsEvent.LevelComplete(LastAvailableLevel, analyticsData);
+            AnalyticsEvent.LevelComplete(LastDoneLevel, analyticsData);
         }
     }
 }

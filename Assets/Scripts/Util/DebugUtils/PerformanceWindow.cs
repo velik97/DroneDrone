@@ -18,11 +18,12 @@ namespace Util.DebugUtils
 
         private void Awake()
         {
-#if !DEBUG
-            Destroy(this);
-            return;
-#endif
-            
+            if (!Debug.isDebugBuild)
+            {
+                Destroy(this);
+                return;
+            }
+
             if (s_Instance == null)
             {
                 s_Instance = this;

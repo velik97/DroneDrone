@@ -38,7 +38,7 @@ namespace Drone.Control
         {
 #if UNITY_EDITOR
             m_InputHandler = new KeyboardInputHandler();
-#elif PLATFORM_IOS
+#elif PLATFORM_IOS || PLATFORM_ANDROID
             m_InputHandler = new TouchInputHandler();
 #endif
 

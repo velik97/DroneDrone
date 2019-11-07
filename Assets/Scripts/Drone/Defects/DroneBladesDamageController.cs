@@ -1,5 +1,6 @@
 using System;
 using Drone.Control;
+using Drone.Physics;
 using GameProcessManaging;
 using UniRx;
 using UnityEngine;
@@ -8,39 +9,30 @@ using Util.EventBusSystem;
 
 namespace Drone.Defects
 {
-    [RequireComponent(typeof(Rigidbody2D))]
-    public class DroneBladesDamageController : DisposableContainerMonoBehaviour, IEnginesStateModifier, IRestoreStateHandler
+    public class DroneBladesDamageController : DisposableContainer, IEnginesStateModifier, IRestoreStateHandler
     {
-        [SerializeField]
-        private Collider2DWithEvents m_RightBladesCollider;
-        [SerializeField]
-        private Collider2DWithEvents m_LeftBladesCollider;
-        [SerializeField]
-        private LayerMask m_ObstaclesLayerMask;
-        [SerializeField]
-        private GameObject m_RightBladesObject;
-        [SerializeField]
-        private GameObject m_LeftBladesObject;
-
-        [SerializeField]
-        private float m_ImpactForce;
-
-        private Rigidbody2D m_Rigidbody;
+        private readonly LayerMask m_ObstaclesLayerMask;
+        
+        private readonly GameObject m_RightBladesObject;
+        private readonly GameObject m_LeftBladesObject;
+        
+        private readonly DronePhysicsBase m_DronePhysics;
         
         private bool m_RightEngineIsWorking = true;
         private bool m_LeftEngineIsWorking = true;
 
-        private void Awake()
+        public DroneBladesDamageController(Collider2DWithEvents rightBladesCollider,
+            Collider2DWithEvents leftBladesCollider, LayerMask obstaclesLayerMask, GameObject rightBladesObject,
+            GameObject leftBladesObject, DronePhysicsBase dronePhysics)
         {
-            Initialize();
-        }
+            m_ObstaclesLayerMask = obstaclesLayerMask;
+            m_RightBladesObject = rightBladesObject;
+            m_LeftBladesObject = leftBladesObject;
+            m_DronePhysics = dronePhysics;
 
-        private void Initialize()
-        {
-            m_Rigidbody = GetComponent<Rigidbody2D>();
-            AddDisposable(m_RightBladesCollider.OnTriggerEnter2DCommand.Subscribe(CheckRightBladeForDamage));
-            AddDisposable(m_LeftBladesCollider.OnTriggerEnter2DCommand.Subscribe(CheckLeftBladeForDamage));
-            
+            AddDisposable(rightBladesCollider.OnTriggerEnter2DCommand.Subscribe(CheckRightBladeForDamage));
+            AddDisposable(leftBladesCollider.OnTriggerEnter2DCommand.Subscribe(CheckLeftBladeForDamage));
+
             AddDisposable(EventBus.Subscribe(this));
         }
 
@@ -58,7 +50,7 @@ namespace Drone.Defects
                     {
                         EventBus.TriggerEvent<IDroneBladesDamageHandler>(h => h.HandleBothEnginesAreBroken());
                     }
-                    ApplyImpactForce(true);
+                    m_DronePhysics.ApplyBladeCollisionPokeForce(true);
                     m_RightBladesObject.SetActive(false);
                 }
                 
@@ -80,20 +72,12 @@ namespace Drone.Defects
                     {
                         EventBus.TriggerEvent<IDroneBladesDamageHandler>(h => h.HandleBothEnginesAreBroken());
                     }
-                    ApplyImpactForce(false);
+                    m_DronePhysics.ApplyBladeCollisionPokeForce(false);
                     m_LeftBladesObject.SetActive(false);
                 }
                 
                 m_LeftEngineIsWorking = false;
             }
-        }
-
-        private void ApplyImpactForce(bool right)
-        {
-            Vector3 applyPosition = (right ? m_RightBladesObject : m_LeftBladesObject).transform.position;
-            Vector3 force = (right ? -transform.right : transform.right) * m_ImpactForce;
-            
-            m_Rigidbody.AddForceAtPosition(force, applyPosition, ForceMode2D.Impulse);
         }
 
         public bool ModifiedRightEngineState()

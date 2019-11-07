@@ -8,7 +8,7 @@ using Util.GlobalInitializationSystem;
 
 namespace Drone.Control
 {
-    public class DroneControl : DisposableContainerMonoBehaviour,
+    public class DroneControl : DisposableContainer,
         IGamePauseHandler,
         IGameOverHandler,
         IGameFinishHandler,
@@ -18,47 +18,32 @@ namespace Drone.Control
         private bool m_RightWasPressed = false;
         private bool m_LeftWasPressed = false;
 
-        private ReactiveCommand OnRightIsJustPressed = new ReactiveCommand();
-        private ReactiveCommand OnLeftIsJustPressed = new ReactiveCommand();
-        private ReactiveCommand OnRightIsJustReleased = new ReactiveCommand();
-        private ReactiveCommand OnLeftIsJustReleased = new ReactiveCommand();
+        private readonly BoolReactiveProperty m_RightIsPressed = new BoolReactiveProperty();
+        private readonly BoolReactiveProperty m_LeftIsPressed = new BoolReactiveProperty();
 
-        private IInputHandler m_InputHandler;
+        public IReadOnlyReactiveProperty<bool> RightIsPressed => m_RightIsPressed;
+        public IReadOnlyReactiveProperty<bool> LeftIsPressed => m_LeftIsPressed;
 
-        private DronePhysicsBase m_Physics;
-
+        private IInputReader m_InputReader;
+        
         private bool m_ControlIsSuppressed = false;
 
-        private void Start()
-        {
-            Initialize();
-        }
-
-        private void Initialize()
+        public DroneControl()
         {
 #if UNITY_EDITOR
-            m_InputHandler = new KeyboardInputHandler();
+            m_InputReader = new KeyboardInputReader();
 #elif PLATFORM_IOS || PLATFORM_ANDROID
-            m_InputHandler = new TouchInputHandler();
+            m_InputReader = new TouchInputReader();
+            AddDisposable(m_InputReader as IDisposable);
 #endif
 
             AddDisposable(EventBus.Subscribe(this));
         }
 
-        public void SubscribeOnControl(DronePhysicsBase physic)
-        {
-            m_Physics = physic;
-            AddDisposable(OnRightIsJustPressed.Subscribe(_ => m_Physics.TurnOnRight()));
-            AddDisposable(OnLeftIsJustPressed.Subscribe(_ => m_Physics.TurnOnLeft()));
-            
-            AddDisposable(OnRightIsJustReleased.Subscribe(_ => m_Physics.TurnOffRight()));
-            AddDisposable(OnLeftIsJustReleased.Subscribe(_ => m_Physics.TurnOffLeft()));
-        }
-
         private void SuppressControl()
         {
-            m_Physics.TurnOffLeft();
-            m_Physics.TurnOffRight();
+            m_RightIsPressed.Value = false;
+            m_LeftIsPressed.Value = false;
 
             m_ControlIsSuppressed = true;
         }
@@ -68,7 +53,7 @@ namespace Drone.Control
             m_ControlIsSuppressed = false;
         }
 
-        private void Update()
+        public void Update()
         {
             if (m_ControlIsSuppressed || IsDisposed)
             {
@@ -79,25 +64,25 @@ namespace Drone.Control
 
         private void UpdateInput()
         {
-            bool rightIsPressed = m_InputHandler?.RightIsPressed() ?? false;
-            bool leftIsPressed = m_InputHandler?.LeftIsPressed() ?? false;
+            bool rightIsPressed = m_InputReader?.RightIsPressed() ?? false;
+            bool leftIsPressed = m_InputReader?.LeftIsPressed() ?? false;
             
             if (rightIsPressed && !m_RightWasPressed)
             {
-                OnRightIsJustPressed.Execute();
+                m_RightIsPressed.Value = true;
             }
             else if (!rightIsPressed && m_RightWasPressed)
             {
-                OnRightIsJustReleased.Execute();
+                m_RightIsPressed.Value = false;
             }
             
             if (leftIsPressed && !m_LeftWasPressed)
             {
-                OnLeftIsJustPressed.Execute();
+                m_LeftIsPressed.Value = true;
             }
             else if (!leftIsPressed && m_LeftWasPressed)
             {
-                OnLeftIsJustReleased.Execute();
+                m_LeftIsPressed.Value = false;
             }
 
             m_RightWasPressed = rightIsPressed;

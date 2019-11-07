@@ -12,16 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0d537b862004ef19c196bff96723e61, type: 3}
   m_Name: Default Physics Settings
   m_EditorClassIdentifier: 
-  m_Mass: 1
-  m_OneEngineLinearForce: 20
-  m_TwoEnginesLinearForce: 40
-  m_Torque: 10
-  m_DirectionalDragType: 2
-  m_DirectionalDrag: 0.015
-  m_AngularDragType: 2
-  m_AngularDrag: 0.00001
-  m_MaxAngularSpeed: 1000
-  m_TorqueFromAngularSpeedCurve:
+  Mass: 1
+  OneEngineLinearForce: 20
+  TwoEnginesLinearForce: 40
+  Torque: 10
+  DirectionalDragType: 2
+  DirectionalDrag: 0.015
+  AngularDragType: 2
+  AngularDrag: 0.00001
+  MaxAngularSpeed: 1000
+  TorqueFromAngularSpeedCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
@@ -45,3 +45,4 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  BladeCollisionPokeForce: 5

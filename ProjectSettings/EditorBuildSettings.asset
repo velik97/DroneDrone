@@ -23,4 +23,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Scenes/Level5.unity
     guid: 99744d227030240d3843f064315a0ec9
+  - enabled: 1
+    path: Assets/_Scenes/Polygon.unity
+    guid: bec9df4a255364471b9b692c0e5a0842
   m_configObjects: {}

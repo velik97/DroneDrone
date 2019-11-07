@@ -10,10 +10,14 @@ namespace Drone.Physics
     {
         private IEnginesStateModifier[] m_EnginesStateModifiers;
 
-        protected override void Initialize()
+        public SimpleDronePhysicsWithEngineModifiers(DronePhysicsSettings physicsSettings, Transform transform,
+            Rigidbody2D rigidbody) :
+            base(physicsSettings, transform, rigidbody)
+        {}
+
+        public void SetEngineModifiers(params IEnginesStateModifier[] enginesStateModifiers)
         {
-            base.Initialize();
-            m_EnginesStateModifiers = GetComponents<IEnginesStateModifier>();
+            m_EnginesStateModifiers = enginesStateModifiers;
         }
 
         protected override void UpdateForces()
@@ -38,18 +42,18 @@ namespace Drone.Physics
             {
                 if (rightEngineIsOn)
                 {
-                    Torque = PhysicsSettings.Torque;
+                    Torque = m_PhysicsSettings.Torque;
                 }
                 else if (leftEngineIsOn)
                 {
-                    Torque = -PhysicsSettings.Torque;
+                    Torque = -m_PhysicsSettings.Torque;
                 }
 
-                DirectionalForce = PhysicsSettings.OneEngineLinearForce;
+                DirectionalForce = m_PhysicsSettings.OneEngineLinearForce;
             }
             else if (rightEngineIsOn && leftEngineIsOn)
             {
-                DirectionalForce = PhysicsSettings.TwoEnginesLinearForce;
+                DirectionalForce = m_PhysicsSettings.TwoEnginesLinearForce;
             }
             
             if (Torque != 0f)
@@ -58,11 +62,6 @@ namespace Drone.Physics
             }
         }
         
-        private float ModifiedTorque()
-        {
-            float sign = Math.Sign(Torque);
-            float curveValue = Mathf.Clamp01((sign * AngularVelocity/ PhysicsSettings.MaxAngularSpeed + 1) / 2f);
-            return PhysicsSettings.TorqueFromAngularSpeedCurve.Evaluate(curveValue) * PhysicsSettings.Torque * sign;
-        }
+        
     }
 }

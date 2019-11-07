@@ -297,10 +297,11 @@
           <e p="Drone" t="Include">
             <e p="Control" t="Include">
               <e p="DroneControl.cs" t="Include" />
-              <e p="IInputHandler.cs" t="Include" />
+              <e p="IInputReader.cs" t="Include" />
+              <e p="ITouchInputHandler.cs" t="Include" />
               <e p="KeyboardControlSettings.cs" t="Include" />
-              <e p="KeyboardInputHandler.cs" t="Include" />
-              <e p="TouchInputHandler.cs" t="Include" />
+              <e p="KeyboardInputReader.cs" t="Include" />
+              <e p="TouchInputReader.cs" t="Include" />
             </e>
             <e p="Defects" t="Include">
               <e p="BadSignalController.cs" t="Include" />
@@ -308,6 +309,8 @@
               <e p="DroneBladesDamageController.cs" t="Include" />
               <e p="IEnginesStateModifier.cs" t="Include" />
             </e>
+            <e p="Drone.cs" t="Include" />
+            <e p="DroneSettings.cs" t="Include" />
             <e p="Physics" t="Include">
               <e p="DronePhysicsBase.cs" t="Include" />
               <e p="DronePhysicsSettings.cs" t="Include" />
@@ -324,9 +327,15 @@
             <e p="GameStateManager.cs" t="Include" />
             <e p="IGameProcessSubscibers.cs" t="Include" />
           </e>
-          <e p="LandingRegistration" t="Include">
-            <e p="IFinishLandingHandler.cs" t="Include" />
-            <e p="LandingRegistrar.cs" t="Include" />
+          <e p="LevelElements" t="Include">
+            <e p="Collectables" t="Include">
+              <e p="CollectablesTrigger.cs" t="Include" />
+              <e p="ICollectable.cs" t="Include" />
+            </e>
+            <e p="LandingRegistration" t="Include">
+              <e p="IFinishLandingHandler.cs" t="Include" />
+              <e p="LandingRegistrar.cs" t="Include" />
+            </e>
           </e>
           <e p="LevelsProgressManagement" t="Include">
             <e p="ILastAvailableLevelChangedHandler.cs" t="Include" />
@@ -378,6 +387,11 @@
             <e p="QuickRestartMenu" t="Include">
               <e p="QuickRestartView.cs" t="Include" />
               <e p="QuickRestartVM.cs" t="Include" />
+            </e>
+            <e p="TouchControl" t="Include">
+              <e p="TouchButton.cs" t="Include" />
+              <e p="TouchControlView.cs" t="Include" />
+              <e p="TouchControlVM.cs" t="Include" />
             </e>
             <e p="WinMenu" t="Include">
               <e p="WinMenuView.cs" t="Include" />

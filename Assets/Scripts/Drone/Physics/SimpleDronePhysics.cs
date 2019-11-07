@@ -1,10 +1,14 @@
 using System;
+using Drone.Control;
 using UnityEngine;
 
 namespace Drone.Physics
 {
     public class SimpleDronePhysics : DronePhysicsBase
     {
+        public SimpleDronePhysics(DronePhysicsSettings physicsSettings, Transform transform, Rigidbody2D rigidbody) : base(physicsSettings, transform, rigidbody)
+        {}
+
         protected override void UpdateForces()
         {
             DirectionalForce = 0f;
@@ -15,31 +19,24 @@ namespace Drone.Physics
             {
                 if (RightEngineIsOn)
                 {
-                    Torque = PhysicsSettings.Torque;
+                    Torque = m_PhysicsSettings.Torque;
                 }
                 else if (LeftEngineIsOn)
                 {
-                    Torque = -PhysicsSettings.Torque;
+                    Torque = -m_PhysicsSettings.Torque;
                 }
 
-                DirectionalForce = PhysicsSettings.OneEngineLinearForce;
+                DirectionalForce = m_PhysicsSettings.OneEngineLinearForce;
             }
             else if (RightEngineIsOn && LeftEngineIsOn)
             {
-                DirectionalForce = PhysicsSettings.TwoEnginesLinearForce;
+                DirectionalForce = m_PhysicsSettings.TwoEnginesLinearForce;
             }
 
             if (Torque != 0f)
             {
                 Torque = ModifiedTorque();
             }
-        }
-        
-        private float ModifiedTorque()
-        {
-            float sign = Math.Sign(Torque);
-            float curveValue = Mathf.Clamp01((sign * AngularVelocity/ PhysicsSettings.MaxAngularSpeed + 1) / 2f);
-            return PhysicsSettings.TorqueFromAngularSpeedCurve.Evaluate(curveValue) * PhysicsSettings.Torque * sign;
         }
     }
 }

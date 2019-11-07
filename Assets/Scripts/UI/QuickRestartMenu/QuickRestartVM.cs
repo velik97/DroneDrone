@@ -71,6 +71,7 @@ namespace DefaultNamespace
 
         public void HandleRestoreState()
         {
+            m_EngineIsBroken = false;
             OnClose.Execute();
         }
     }

@@ -7,24 +7,17 @@ using Util.EventBusSystem;
 
 namespace Drone.Control
 {
-    public class BadSignalController : DisposableContainerMonoBehaviour, IEnginesStateModifier
+    public class BadSignalController : DisposableContainer, IEnginesStateModifier
     {
-        [SerializeField]
-        private Collider2DWithEvents m_ReceiverCollider;
-        [SerializeField]
-        private LayerMask m_BadZoneLayerMask;
+        private readonly LayerMask m_BadZoneLayerMask;
         
         private int m_BadSignalZonesTouching = 0;
 
-        private void Awake()
+        public BadSignalController(Collider2DWithEvents receiverCollider, LayerMask badZoneLayerMask)
         {
-            Initialize();
-        }
-
-        public void Initialize()
-        {            
-            AddDisposable(m_ReceiverCollider.OnTriggerEnter2DCommand.Subscribe(OnReceiverEnteredCollider));
-            AddDisposable(m_ReceiverCollider.OnTriggerExit2DCommand.Subscribe(OnReceiverEscapedCollider));
+            m_BadZoneLayerMask = badZoneLayerMask;
+            AddDisposable(receiverCollider.OnTriggerEnter2DCommand.Subscribe(OnReceiverEnteredCollider));
+            AddDisposable(receiverCollider.OnTriggerExit2DCommand.Subscribe(OnReceiverEscapedCollider));
         }
 
         private void OnReceiverEnteredCollider(Collider2D collider)

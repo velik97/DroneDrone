@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using Drone.Defects;
-using LandingRegistration;
+using LevelElements.LandingRegistration;
 using UnityEngine;
 using Util;
 using Util.CoroutineHandler;

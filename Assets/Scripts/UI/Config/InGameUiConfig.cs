@@ -6,6 +6,7 @@ using UI.FinishIndicator;
 using UI.GameOverPanel;
 using UI.LoadingScreenPanel;
 using UI.PauseMenu;
+using UI.TouchControl;
 using UI.WinMenu;
 using UnityEngine;
 using Util;
@@ -28,6 +29,9 @@ namespace UI.Config
         private LoadingScreenView m_LoadingScreenView;
         [SerializeField]
         private DevMenuView m_DevMenuView;
+        [SerializeField]
+        private TouchControlView m_TouchControlView;
+        
 
         private FinishIndicatorView m_FinishIndicatorView;
         
@@ -39,6 +43,7 @@ namespace UI.Config
                 {
                     m_FinishIndicatorView = FindObjectOfType<FinishIndicatorView>();
                 }
+
                 return m_FinishIndicatorView;
             }
         }
@@ -58,6 +63,10 @@ namespace UI.Config
             AddDisposable(m_LoadingScreenView.CreateViewModelAndBind());
 
             AddDisposable(FinishIndicatorView.CreateViewModelAndBind());
+            
+#if PLATFORM_IOS || PLATFORM_ANDROID
+            AddDisposable(m_TouchControlView.CreateViewModelAndBind());
+#endif
 
             if (Debug.isDebugBuild)
             {
